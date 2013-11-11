@@ -1,0 +1,96 @@
+#include <thrust/device_vector.h>
+#include <thrust/transform.h>
+#include <thrust/functional.h>
+#include <thrust/sequence.h>
+#include <thrust/sort.h>
+#include <nvToolsExt.h>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+
+struct saxpy_functor 
+{
+    const float a;
+
+    saxpy_functor(float _a) : a(_a) {}
+
+    __host__ __device__
+        float operator()(const float& x, const float& y) const { 
+            return a * x + y;
+        }
+};
+
+template <typename T1, typename T2>
+struct convert_functor
+{
+    __host__ __device__
+        T2 operator()(const T1& x) const { 
+            return (T2) x;
+        }
+};
+
+void saxpy_fast(float A, thrust::device_vector<float>& X, thrust::device_vector<float>& Y)
+{
+    thrust::transform(X.begin(), X.end(), Y.begin(), Y.begin(), saxpy_functor(A));
+}
+
+void saxpy_slow(float A, thrust::device_vector<float>& X, thrust::device_vector<float>& Y)
+{
+    thrust::device_vector<float> temp(X.size());
+    thrust::fill(temp.begin(), temp.end(), A);
+    thrust::transform(X.begin(), X.end(), temp.begin(), temp.begin(), thrust::multiplies<float>());
+    thrust::transform(temp.begin(), temp.end(), Y.begin(), Y.begin(), thrust::plus<float>());
+}
+
+int main (int argc, char **argv)
+{
+  int N=1000000;
+
+  if (argc>1) {  N = atoi(argv[1]); }
+
+  nvtxRangeId_t id0= nvtxRangeStart("Initialize");
+
+  thrust::device_vector<int> x(N);
+  thrust::device_vector<int> y(N);
+
+  thrust::sequence(x.begin(), x.end(), N, -1);
+  thrust::sequence(y.begin(), y.end(), 0);
+
+  thrust::device_vector<float> XX(N);
+  thrust::device_vector<float> YY(N);
+
+  thrust::transform(x.begin(), x.end(), XX.begin(), convert_functor<int,float>());
+  thrust::transform(y.begin(), y.end(), YY.begin(), convert_functor<int,float>());
+ 
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id0);
+ 
+  nvtxRangeId_t id1= nvtxRangeStart("Saxpy Slow");
+  saxpy_slow(2.0f, XX, YY);
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id1);
+  
+  nvtxRangeId_t id2= nvtxRangeStart("Saxpy fast");
+  saxpy_fast(2.0f, XX, YY);
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id2);
+
+  nvtxRangeId_t id3= nvtxRangeStart("Sort");
+  thrust::sort_by_key(YY.begin(), YY.end(), XX.begin());  
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id3);
+ 
+  nvtxRangeId_t id4= nvtxRangeStart("Reduce");
+  float RES = thrust::reduce(YY.begin(), YY.end());
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id4);
+
+  nvtxRangeId_t id5= nvtxRangeStart("Inclusive Scan");
+  thrust::inclusive_scan(YY.begin(), YY.end(), XX.begin()); 
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id5);
+
+  std::cout <<  "GPU execution. N is " << N << std::endl; 
+  
+  return 0;
+}

@@ -1,0 +1,71 @@
+using namespace std;
+
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <thrust/inner_product.h>
+#include <nvToolsExt.h>
+
+#include <iostream>
+#include <stdlib.h>
+
+void init_rand(float V[], int n) {
+  int i;
+  for (i = 0; i < n; i++)
+    V[i] = 0.5f + ((float) random() ) / RAND_MAX;
+}
+
+
+int main (int argc, char **argv)
+{
+  int N=400000, K=100000;
+
+  if (argc>1) {  N = atoi(argv[1]); }
+  if (argc>2) {  K = atoi(argv[2]); }
+
+  srand(0); // init random generation seed
+
+  // Host (CPU) vectors
+  thrust::host_vector<float> S_HOST(N);
+  thrust::host_vector<float> F_HOST(K);
+  thrust::host_vector<float> O_HOST(N);
+  thrust::host_vector<float> O2_HOST(N);
+
+  // CPU execution
+  init_rand (thrust::raw_pointer_cast(&S_HOST[0]), N);
+  init_rand (thrust::raw_pointer_cast(&F_HOST[0]), K);
+
+  // Device (GPU) vectors
+  nvtxRangeId_t id0= nvtxRangeStart("Declare GPU Vectors");
+  thrust::device_vector<float> S_DEVICE(N);
+  thrust::device_vector<float> F_DEVICE(K);
+  thrust::device_vector<float> O_DEVICE(N);
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id0);
+
+  // COPY from Host to DEVICE  ( CPU to GPU )
+  nvtxRangeId_t id1= nvtxRangeStart("copy to Device");
+  S_DEVICE = S_HOST;
+  F_DEVICE = F_HOST;
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id1);
+
+  nvtxRangeId_t id2= nvtxRangeStart("FILTER GPU");
+  int i;
+  for (i = 0; i < N-K; i++)
+    O_DEVICE[i] = thrust::inner_product ( F_DEVICE.begin(), F_DEVICE.end(),// input 1 
+                                          S_DEVICE.begin()+i, 		// input 2
+                                          (float) 0.0f);			// init value
+
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id2);
+
+  // Copy from Device to Host
+  nvtxRangeId_t id3= nvtxRangeStart("Copy to Host");
+  O2_HOST = O_DEVICE;
+  cudaThreadSynchronize();
+  nvtxRangeEnd(id3);
+
+  std::cout <<  "GPU execution. N is " << N << " and K is " << K << std::endl; 
+
+  return 0;
+}
