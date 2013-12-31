@@ -1,0 +1,38 @@
+#include <iostream>
+#include <stdlib.h>
+
+void filter(float const In[], float const Filter[], float Out[], int n, int k) {
+  int i;
+#pragma omp parallel for firstprivate(n,k)
+  for (i = 0; i < n-k; i++) 
+    Out[i] = __sec_reduce_add( In[i:k] * Filter[0:k]);
+}
+
+void init_rand(float V[], int n) {
+  int i;
+  for (i = 0; i < n; i++)
+    V[i] = 0.5f + ((float) random() ) / RAND_MAX;
+}
+
+int main (int argc, char **argv)
+{
+  int N=1000000, K=20000;
+
+  if (argc>1) {  N = atoi(argv[1]); }
+  if (argc>2) {  K = atoi(argv[2]); }
+
+  srand(0); // init random generation seed
+
+  float * S = (float*) malloc(sizeof(float)*N);
+  float * F = (float*) malloc(sizeof(float)*K);
+  float * O = (float*) malloc(sizeof(float)*N);
+
+  init_rand (S, N);
+  init_rand (F, K);
+
+  filter (S, F, O, N, K);
+  
+  std::cout <<  "CPU multicore execution. N is " << N << " and K is " << K << std::endl; 
+
+  return 0;
+}
