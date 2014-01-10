@@ -1,0 +1,132 @@
+1 thread==============
+CPU multicore execution. N is 400000 and K is 100000
+CPU multicore execution. N is 400000 and K is 100000
+CPU multicore execution. N is 400000 and K is 100000
+
+ Performance counter stats for './filterCPU':
+
+       9026,151870 task-clock                #    0,996 CPUs utilized          
+               925 context-switches          #    0,102 K/sec                  
+                 0 CPU-migrations            #    0,000 K/sec                  
+             1.329 page-faults               #    0,147 K/sec                  
+    30.480.669.484 cycles                    #    3,377 GHz                    
+    14.431.837.700 stalled-cycles-frontend   #   47,35% frontend cycles idle   
+     9.474.260.102 stalled-cycles-backend    #   31,08% backend  cycles idle   
+    41.324.955.824 instructions              #    1,36  insns per cycle        
+                                             #    0,35  stalled cycles per insn
+     3.765.428.490 branches                  #  417,169 M/sec                  
+           439.191 branch-misses             #    0,01% of all branches        
+
+       9,063134718 seconds time elapsed
+
+2 thread==============
+CPU multicore execution. N is 400000 and K is 100000
+
+ Performance counter stats for './filterCPU':
+
+       9618,253075 task-clock                #    1,910 CPUs utilized          
+             1.019 context-switches          #    0,106 K/sec                  
+                 4 CPU-migrations            #    0,000 K/sec                  
+             1.350 page-faults               #    0,140 K/sec                  
+    31.191.250.099 cycles                    #    3,243 GHz                    
+    15.000.325.932 stalled-cycles-frontend   #   48,09% frontend cycles idle   
+    10.130.310.074 stalled-cycles-backend    #   32,48% backend  cycles idle   
+    41.613.591.089 instructions              #    1,33  insns per cycle        
+                                             #    0,36  stalled cycles per insn
+     3.855.106.552 branches                  #  400,812 M/sec                  
+           482.295 branch-misses             #    0,01% of all branches        
+
+       5,035432088 seconds time elapsed
+
+./filterCPU: Interrupción
+
+ Performance counter stats for './filterCPU':
+
+       6658,090544 task-clock                #    1,991 CPUs utilized          
+               703 context-switches          #    0,106 K/sec                  
+                 2 CPU-migrations            #    0,000 K/sec                  
+             1.253 page-faults               #    0,188 K/sec                  
+    21.587.991.984 cycles                    #    3,242 GHz                    
+    10.249.187.945 stalled-cycles-frontend   #   47,48% frontend cycles idle   
+     6.846.535.196 stalled-cycles-backend    #   31,71% backend  cycles idle   
+    29.170.375.566 instructions              #    1,35  insns per cycle        
+                                             #    0,35  stalled cycles per insn
+     2.659.449.983 branches                  #  399,431 M/sec                  
+           354.863 branch-misses             #    0,01% of all branches        
+
+       3,343830851 seconds time elapsed
+
+4 thread==============
+./filterCPU: Interrupción
+
+ Performance counter stats for './filterCPU':
+
+       2510,477223 task-clock                #    1,983 CPUs utilized          
+               276 context-switches          #    0,110 K/sec                  
+                 2 CPU-migrations            #    0,001 K/sec                  
+             1.124 page-faults               #    0,448 K/sec                  
+     8.129.465.377 cycles                    #    3,238 GHz                    
+     3.890.491.996 stalled-cycles-frontend   #   47,86% frontend cycles idle   
+     2.611.733.222 stalled-cycles-backend    #   32,13% backend  cycles idle   
+    10.898.943.271 instructions              #    1,34  insns per cycle        
+                                             #    0,36  stalled cycles per insn
+       996.987.081 branches                  #  397,131 M/sec                  
+           158.446 branch-misses             #    0,02% of all branches        
+
+       1,265965177 seconds time elapsed
+
+CPU multicore execution. N is 400000 and K is 100000
+
+ Performance counter stats for './filterCPU':
+
+      14023,624573 task-clock                #    3,862 CPUs utilized          
+             1.460 context-switches          #    0,104 K/sec                  
+                 9 CPU-migrations            #    0,001 K/sec                  
+             1.375 page-faults               #    0,098 K/sec                  
+    45.480.027.283 cycles                    #    3,243 GHz                    
+    27.942.746.016 stalled-cycles-frontend   #   61,44% frontend cycles idle   
+    22.640.994.687 stalled-cycles-backend    #   49,78% backend  cycles idle   
+    41.347.599.592 instructions              #    0,91  insns per cycle        
+                                             #    0,68  stalled cycles per insn
+     3.770.708.454 branches                  #  268,883 M/sec                  
+           515.552 branch-misses             #    0,01% of all branches        
+
+       3,631624572 seconds time elapsed
+
+8 thread==============
+./filterCPU: error while loading shared libraries: libiomp5.so: cannot open shared object file: No such file or directory
+
+ Performance counter stats for './filterCPU':
+
+          0,312609 task-clock                #    0,021 CPUs utilized          
+                 1 context-switches          #    0,003 M/sec                  
+                 0 CPU-migrations            #    0,000 K/sec                  
+                51 page-faults               #    0,163 M/sec                  
+           495.412 cycles                    #    1,585 GHz                    
+           301.585 stalled-cycles-frontend   #   60,88% frontend cycles idle   
+           191.884 stalled-cycles-backend    #   38,73% backend  cycles idle   
+           335.135 instructions              #    0,68  insns per cycle        
+                                             #    0,90  stalled cycles per insn
+            63.943 branches                  #  204,546 M/sec                  
+             3.389 branch-misses             #    5,30% of all branches        
+
+       0,014546240 seconds time elapsed
+
+CPU multicore execution. N is 400000 and K is 100000
+
+ Performance counter stats for './filterCPU':
+
+      22699,322037 task-clock                #    7,428 CPUs utilized          
+             2.436 context-switches          #    0,107 K/sec                  
+                10 CPU-migrations            #    0,000 K/sec                  
+             1.422 page-faults               #    0,063 K/sec                  
+    73.631.044.951 cycles                    #    3,244 GHz                    
+    54.541.865.967 stalled-cycles-frontend   #   74,07% frontend cycles idle   
+    28.009.120.794 stalled-cycles-backend    #   38,04% backend  cycles idle   
+    43.705.291.420 instructions              #    0,59  insns per cycle        
+                                             #    1,25  stalled cycles per insn
+     4.499.655.454 branches                  #  198,229 M/sec                  
+         1.069.087 branch-misses             #    0,02% of all branches        
+
+       3,055872395 seconds time elapsed
+
